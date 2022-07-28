@@ -2,7 +2,7 @@ const { mongoose } = require('../../utils/connect');
 
 const userSchema = mongoose.Schema(
 	{
-		username: { type: String, required: true },
+		username: { type: String, required: true, minLength: 6 },
 		password: { type: String, required: true },
 		email: { type: String, required: true },
 		fullname: String,
