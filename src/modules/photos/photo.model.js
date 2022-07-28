@@ -1,6 +1,6 @@
 const { mongoose } = require('../../utils/connect');
 const Schema = mongoose.Schema;
-
+a;
 const photoShema = Schema(
 	{
 		userID: { type: Schema.Types.ObjectId, required: true },

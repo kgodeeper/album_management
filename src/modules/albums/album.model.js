@@ -1,4 +1,5 @@
 const { mongoose } = require('../../utils/connect');
+a;
 
 const albumSchema = mongoose.Schema(
 	{
