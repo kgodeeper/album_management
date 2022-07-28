@@ -8,9 +8,9 @@ const userSchema = mongoose.Schema(
 		email: { type: String, required: true },
 		fullname: String,
 		dob: Date,
-		gender: { type: Boolean, default: 1 },
+		gender: { type: Boolean, default: true },
 		phone: String,
-		isActive: { type: Boolean, required: true },
+		isActive: { type: Boolean, required: true, default: false },
 		activationCode: Number,
 	},
 	{
