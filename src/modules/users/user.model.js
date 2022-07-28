@@ -1,4 +1,5 @@
 const { mongoose } = require('../../utils/connect');
+const scrypto = require('crypto');
 
 const userSchema = mongoose.Schema(
 	{
