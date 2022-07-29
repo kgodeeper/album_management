@@ -1,5 +1,6 @@
 require('dotenv').config({ path: './src/configs/.env' });
 const userService = require('../users/user.service');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
 const userLogin = async (username, password) => {
@@ -9,6 +10,7 @@ const userLogin = async (username, password) => {
 		accessToken: null,
 		error: null,
 	};
+	password = crypto.createHash('SHA256').update(password).digest('hex');
 	const userExist = await userService.checkUserExist(username, password);
 	if (userExist.error) {
 		loginStatus.isLogin = false;
