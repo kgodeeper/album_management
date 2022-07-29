@@ -14,11 +14,7 @@ const checkUserExist = async (username, password) => {
 			error: null,
 		};
 	} catch (error) {
-		return {
-			isExist: null,
-			isActive: null,
-			error,
-		};
+		throw new Error(200, error);
 	}
 };
 
