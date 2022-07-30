@@ -1,10 +1,12 @@
 class ErrorHandling extends Error {
 	errorCode;
-	error;
-	constructor(errorCode, error) {
-		super(errorMessage);
+	errorMessage;
+	constructor(errorCode, errorMessage) {
+		super();
 		this.errorCode = errorCode;
-		this.error = error;
+		this.errorMessage = errorMessage;
 	}
 }
+
+module.exports = { Error: ErrorHandling };
 

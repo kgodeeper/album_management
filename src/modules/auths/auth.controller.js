@@ -9,7 +9,7 @@ const userLogin = async (req, res) => {
 			loginStatus,
 		});
 	} catch (error) {
-		throw new Error(200, error);
+		throw error;
 	}
 };
 

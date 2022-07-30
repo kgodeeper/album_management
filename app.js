@@ -12,8 +12,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(route);
 
+// error handling middleware
 app.use((err, req, res, next) => {
-	res.status(403).json({ error: 'no error' });
+	res.status(err.errorCode).json({ errorDetails: err.errorMessage });
 });
 
 app.listen(process.env.PORT, () => {

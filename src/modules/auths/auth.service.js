@@ -8,9 +8,16 @@ const userLogin = async (username, password) => {
 		isLogin: true,
 		isExist: true,
 		accessToken: null,
+		error: null,
 	};
 	try {
 		password = crypto.createHash('SHA256').update(password).digest('hex');
+	} catch (error) {
+		loginStatus.isLogin = loginStatus.isExist = false;
+		loginStatus.error = `password not valid`;
+		return loginStatus;
+	}
+	try {
 		const userExist = await userService.checkUserExist(username, password);
 		if (userExist.isExist) {
 			if (userExist.isActive) {
@@ -24,7 +31,7 @@ const userLogin = async (username, password) => {
 			loginStatus.isExist = false;
 		}
 	} catch (error) {
-		throw new Error(200, error);
+		throw error;
 	}
 	return loginStatus;
 };

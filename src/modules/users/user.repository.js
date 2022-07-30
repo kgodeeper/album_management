@@ -1,4 +1,5 @@
 const { userModel } = require('./user.model');
+const { databaseError } = require('../../commons/const');
 
 /*  
 	check user is exist
@@ -11,10 +12,10 @@ const checkUserExist = async (username, password) => {
 		return {
 			isExist: !!user,
 			isActive: !!user?.isActive,
-			error: null,
 		};
 	} catch (error) {
-		throw new Error(200, error);
+		console.log(error);
+		throw databaseError;
 	}
 };
 
