@@ -2,7 +2,8 @@ require('dotenv').config({ path: './src/configs/.env' });
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { route } = require('./routes');
+const { authRoute } = require('./src/modules/auths/auth.route');
+const { userRoute, user } = require('./src/modules/users/user.route');
 
 // create server
 const app = express();
@@ -10,7 +11,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use(route);
+app.use(authRoute);
+app.use(userRoute);
 
 // error handling middleware
 app.use((err, req, res, next) => {

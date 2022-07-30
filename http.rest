@@ -1,7 +1,32 @@
-POST http://localhost:2000/login
-Content-Type: application/json
+# POST http://localhost:2000/login
+# Content-Type: application/json
 
-{
-    "username": "",
-    "password": ""
-}
+# {
+#     "account": "kdev17@gmail.com",
+#     "password": "khanh1711"
+# }
+
+# POST http://localhost:2000/register
+# Content-Type: application/json
+
+# {
+#     "username":"kdev11",
+#     "password":"khanh17/",
+#     "rePassword": "khanh17/",
+#     "email": "kdev11@gmail.com"
+# }
+
+# PUT http://localhost:2000/verify-email
+# Content-Type: application/json
+
+# {
+#     "activationCode": "93715",
+#     "email": "kdev11@gmail.com"
+# }
+
+# PUT http://localhost:2000/resend-code
+# Content-Type: application/json
+
+# {
+#     "email": "kdev11@gmail.com"
+# }

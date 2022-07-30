@@ -1,25 +1,50 @@
 const { userModel } = require('./user.model');
 const { databaseError } = require('../../commons/const');
 
-/*  
-	check user is exist
-	?. is nullist operator, if before ? is null, expression return null
-	else return expression value.
-*/
-const checkUserExist = async (username, password) => {
+const findUserByUsername = async username => {
 	try {
-		const user = await userModel.findOne({ username, password });
-		return {
-			isExist: !!user,
-			isActive: !!user?.isActive,
-		};
+		return await userModel.findOne({ username }).lean();
 	} catch (error) {
-		console.log(error);
 		throw databaseError;
 	}
 };
 
+const addUser = async user => {
+	try {
+		await userModel.create(user);
+	} catch (error) {
+		throw databaseError;
+	}
+};
+
+const findUserByEmail = async email => {
+	try {
+		return await userModel.findOne({ email }).lean();
+	} catch (error) {
+		throw databaseError;
+	}
+};
+
+const activeUser = async email => {
+	try {
+		await userModel.updateOne({ email }, { $set: { isActive: true } });
+	} catch (error) {
+		throw databaseError;
+	}
+};
+
+const changeActivationCode = async (email, activationCode) => {
+	try {
+		await userModel.updateOne({ email }, { $set: { activationCode } });
+	} catch (error) {
+		throw databaseError;
+	}
+};
 module.exports = {
-	checkUserExist,
+	findUserByUsername,
+	findUserByEmail,
+	addUser,
+	activeUser,
+	changeActivationCode,
 };
 
