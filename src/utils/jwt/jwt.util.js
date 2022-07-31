@@ -14,12 +14,21 @@ const verify = (token, secret) => {
 		jwt.verify(token, secret);
 		return true;
 	} catch (error) {
-		throw new Error(500, 'JWT Error');
+		throw new Error(200, `${error}`);
+	}
+};
+
+const decode = token => {
+	try {
+		return jwt.decode(token);
+	} catch (error) {
+		throw new Error(200, `${error}`);
 	}
 };
 
 module.exports = {
 	sign,
 	verify,
+	decode,
 };
 

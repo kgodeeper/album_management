@@ -1,10 +1,10 @@
-# POST http://localhost:2000/login
-# Content-Type: application/json
+POST http://localhost:2000/login
+Content-Type: application/json
 
-# {
-#     "account": "kdev17@gmail.com",
-#     "password": "khanh1711"
-# }
+{
+    "account": "kdev11@gmail.com",
+    "password": "17112k/"
+}
 
 # POST http://localhost:2000/register
 # Content-Type: application/json
@@ -16,7 +16,7 @@
 #     "email": "kdev11@gmail.com"
 # }
 
-# PATCH http://localhost:2000/verify-email
+# PATCH http://localhost:2000/active-user
 # Content-Type: application/json
 
 # {
@@ -30,3 +30,21 @@
 # {
 #     "email": "kdev11@gmail.com"
 # }
+
+# POST http://localhost:2000/verify-email 
+# Content-Type: application/json
+
+# {
+#     "verifyCode": "60623",
+#     "email": "kdev11@gmail.com"
+# }
+
+# PATCH http://localhost:2000/forgot-password
+# Content-Type: application/json
+
+# {
+#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtkZXYxMSIsImlhdCI6MTY1OTI0MDM4NiwiZXhwIjoxNjU5MjQwNjg2fQ.7nPs8lZUdT9-hGdgAjDhGvuB3gzQU4_HYDighQMcvMw",
+#     "password": "17112k/",
+#     "rePassword": "17112k/"
+# }
+

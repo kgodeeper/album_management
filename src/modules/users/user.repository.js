@@ -40,11 +40,20 @@ const changeActivationCode = async (email, activationCode) => {
 		throw databaseError;
 	}
 };
+
+const changePasswordByUser = async (username, password) => {
+	try {
+		await userModel.updateOne({ username }, { $set: { password } });
+	} catch (error) {
+		throw databaseError;
+	}
+};
 module.exports = {
 	findUserByUsername,
 	findUserByEmail,
 	addUser,
 	activeUser,
 	changeActivationCode,
+	changePasswordByUser,
 };
 

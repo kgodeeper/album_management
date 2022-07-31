@@ -3,11 +3,11 @@ const userControl = require('./user.controller');
 const validation = require('./user.validation');
 
 route.patch(
-	'/verify-email',
+	'/active-user',
 	validation.validateActiveCode,
 	async (req, res, next) => {
 		try {
-			await userControl.verifyEmail(req, res);
+			await userControl.activeUser(req, res);
 		} catch (error) {
 			next(error);
 		}
@@ -22,7 +22,21 @@ route.patch('/resend-code', async (req, res, next) => {
 	}
 });
 
-route.get('/');
+route.patch('/forgot-password', async (req, res, next) => {
+	try {
+		await userControl.changePasswordByToken(req, res);
+	} catch (error) {
+		next(error);
+	}
+});
+
+route.post('/verify-email', async (req, res, next) => {
+	try {
+		await userControl.verifyEmail(req, res);
+	} catch (error) {
+		next(error);
+	}
+});
 
 module.exports = { userRoute: route };
 

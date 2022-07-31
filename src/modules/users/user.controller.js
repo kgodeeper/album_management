@@ -1,9 +1,9 @@
 const userService = require('./user.service');
 
-const verifyEmail = async (req, res) => {
+const activeUser = async (req, res) => {
 	const { activationCode, email } = req.body;
 	try {
-		const isActive = await userService.verifyEmail(activationCode, email);
+		const isActive = await userService.activeUser(activationCode, email);
 		res.status(200).json({ activeStatus: isActive });
 	} catch (error) {
 		throw error;
@@ -20,8 +20,33 @@ const resendCode = async (req, res) => {
 	}
 };
 
+const changePasswordByToken = async (req, res) => {
+	const { token, password } = req.body;
+	try {
+		const isChange = await userService.changePasswordByToken(
+			token,
+			password
+		);
+		res.status(200).json({ isChange });
+	} catch (error) {
+		throw error;
+	}
+};
+
+const verifyEmail = async (req, res) => {
+	const { verifyCode, email } = req.body;
+	try {
+		const resetPassToken = await userService.verifyEmail(verifyCode, email);
+		res.status(200).json({ resetPassToken });
+	} catch (error) {
+		throw error;
+	}
+};
+
 module.exports = {
-	verifyEmail,
+	activeUser,
 	resendCode,
+	changePasswordByToken,
+	verifyEmail,
 };
 
