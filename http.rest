@@ -16,7 +16,7 @@
 #     "email": "kdev11@gmail.com"
 # }
 
-# PUT http://localhost:2000/verify-email
+# PATCH http://localhost:2000/verify-email
 # Content-Type: application/json
 
 # {
@@ -24,7 +24,7 @@
 #     "email": "kdev11@gmail.com"
 # }
 
-# PUT http://localhost:2000/resend-code
+# PATCH http://localhost:2000/resend-code
 # Content-Type: application/json
 
 # {

@@ -2,7 +2,7 @@ const route = require('express').Router();
 const userControl = require('./user.controller');
 const validation = require('./user.validation');
 
-route.put(
+route.patch(
 	'/verify-email',
 	validation.validateActiveCode,
 	async (req, res, next) => {
@@ -14,7 +14,7 @@ route.put(
 	}
 );
 
-route.put('/resend-code', async (req, res, next) => {
+route.patch('/resend-code', async (req, res, next) => {
 	try {
 		await userControl.resendCode(req, res);
 	} catch (error) {
