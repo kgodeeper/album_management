@@ -1,37 +1,37 @@
-const userAlbumService = require('./album.service');
+const albumService = require('./album.service');
 
 const createAlbum = async (req, res, next) => {
 	try {
-		const { name, description, status, token } = req.body;
-		await userAlbumService.createAlbum({
-			name,
-			description,
-			status,
-			token,
-		});
+		await albumService.createAlbum(req.body);
 		res.status(200).json({ isCreate: true });
 	} catch (error) {
 		next(error);
 	}
 };
 
-const updateAlbum = async (req, res) => {
+const updateAlbum = async (req, res, next) => {
 	try {
-		const { name, description, status, token } = req.body;
-		const isUpdate = await userAlbumSerive.updateAlbum({
-			name,
-			description,
-			status,
-			token,
-		});
-		res.status(200).json({ isUpdate });
+		const albumId = req.params.id;
+		await albumService.updateAlbum({ albumId, ...req.body });
+		res.status(200).json({ isUpdate: true });
 	} catch (error) {
-		throw error;
+		next(error);
+	}
+};
+
+const deleteAlbum = async (req, res, next) => {
+	try {
+		const albumId = req.params.id;
+		await albumService.deleteAlbum({ albumId, ...req.body });
+		res.status(200).json({ isDelete: true });
+	} catch (error) {
+		next(error);
 	}
 };
 
 module.exports = {
 	createAlbum,
 	updateAlbum,
+	deleteAlbum,
 };
 

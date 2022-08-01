@@ -6,7 +6,22 @@ const createAlbum = async albumInfo => {
 	return await albumModel.create({ name, description, status });
 };
 
+const updateAlbum = async albumInfo => {
+	const { albumId, name, description, status } = albumInfo;
+	await albumModel.updateOne(
+		{ _id: albumId },
+		{ $set: { name, description, status } }
+	);
+};
+
+const deleteAlbum = async albumInfo => {
+	const { albumId } = albumInfo;
+	await albumModel.deleteOne({ _id: albumId });
+};
+
 module.exports = {
 	createAlbum,
+	updateAlbum,
+	deleteAlbum,
 };
 

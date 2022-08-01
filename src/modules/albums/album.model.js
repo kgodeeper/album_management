@@ -1,4 +1,5 @@
 const { mongoose } = require('../../configs/database');
+const { userAlbumModel } = require('../user-albums/user-album.model');
 
 const albumSchema = mongoose.Schema(
 	{

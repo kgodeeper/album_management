@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const { authRoute } = require('./modules/auths/auth.route');
 const { userRoute } = require('./modules/users/user.route');
 const { albumRoute } = require('./modules/albums/album.route');
+const { userAlbumRoute } = require('./modules/user-albums/user-album.route');
 
 // create server
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(authRoute);
 app.use(userRoute);
 app.use(albumRoute);
+app.use(userAlbumRoute);
 
 // error handling middleware
 app.use((err, req, res, next) => {

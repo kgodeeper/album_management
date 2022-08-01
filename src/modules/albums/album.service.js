@@ -3,44 +3,70 @@ const { decode } = require('../../utils/jwt.util');
 const albumRepo = require('./album.repository');
 const userAlbumService = require('../user-albums/user-album.service');
 const userRepo = require('../users/user.repository');
+const { Error } = require('../../errors/error-handling');
 
 const createAlbum = async albumInfo => {
 	try {
-		const payload = decode(albumInfo.token, process.env.SECRETSTR);
-		const user = await userRepo.findUserByAccount(payload.account);
-		if (user) {
-			const userId = user._id.toString();
-			const isExist = await userAlbumService.checkAlbumExist(
-				userId,
-				albumInfo.name
-			);
-			if (isExist) throw new Error(500, 'Album already exist');
-			const albumId = await albumRepo.createAlbum(albumInfo);
-			await userAlbumService.addMember({
-				userId,
-				albumId: albumId._id,
-				userRole: 1,
-			});
-		} else {
-			throw new Error(500, "Can't find user");
-		}
+		const { account } = albumInfo;
+		const user = await userRepo.findUserByAccount(account);
+		const userId = user._id.toString();
+		const isExist = await userAlbumService.checkAlbumExist(
+			userId,
+			albumInfo.name
+		);
+		console.log(isExist);
+		if (isExist) throw new Error(500, 'Album already exist');
+		const albumId = await albumRepo.createAlbum(albumInfo);
+		await userAlbumService.addMember({
+			userId,
+			albumId: albumId._id,
+			userRole: 1,
+		});
 	} catch (error) {
 		if (error.errorCode) throw error;
 		else throw new Error(500, 'Unable to create album');
 	}
 };
 
-const updateAlbum = async info => {
+const checkAlbumOwner = async albumInfo => {
+	const { account, albumId } = albumInfo;
+	const user = await userRepo.findUserByAccount(account);
+	const userId = user._id.toString();
+	return await userAlbumService.checkAlbumOwner(userId, albumId);
+};
+
+const updateAlbum = async albumInfo => {
 	try {
-		const payload = decode(albumInfo.token, process.env.SECRETSTR);
-		const user = await userRepo.findUserByAccount(payload.account);
+		const isOwner = await checkAlbumOwner(albumInfo);
+		if (isOwner) {
+			await albumRepo.updateAlbum(albumInfo);
+		} else {
+			throw new Error(403, "You are't owner");
+		}
 	} catch (error) {
-		throw error;
+		if (error.errorCode) throw error;
+		else throw new Error(500, 'Update album fail');
 	}
 };
 
+const deleteAlbum = async albumInfo => {
+	try {
+		const isOwner = await checkAlbumOwner(albumInfo);
+		if (isOwner) {
+			await albumRepo.deleteAlbum(albumInfo);
+			await userAlbumService.deleteAllMembers(albumInfo.albumId);
+			// delete photo here
+		} else {
+			throw new Error(403, "You are't owner");
+		}
+	} catch (error) {
+		if (error.errorCode) throw error;
+		else throw new Error(500, 'Delete album fail');
+	}
+};
 module.exports = {
 	createAlbum,
 	updateAlbum,
+	deleteAlbum,
 };
 
