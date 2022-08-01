@@ -25,6 +25,16 @@ const findUserByEmail = async email => {
 	}
 };
 
+const findUserByAccount = async account => {
+	try {
+		return await userModel
+			.findOne({ $or: [{ username: account }, { email: account }] })
+			.lean();
+	} catch (error) {
+		throw databaseError;
+	}
+};
+
 const activeUser = async email => {
 	try {
 		await userModel.updateOne({ email }, { $set: { isActive: true } });
@@ -67,6 +77,7 @@ const updateUser = async (account, info) => {
 module.exports = {
 	findUserByUsername,
 	findUserByEmail,
+	findUserByAccount,
 	addUser,
 	activeUser,
 	updateUser,

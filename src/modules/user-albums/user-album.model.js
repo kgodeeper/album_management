@@ -1,4 +1,4 @@
-const { mongoose } = require('../../utils/connect');
+const { mongoose } = require('../../utils/connect.util');
 const Schema = mongoose.Schema;
 
 const userAlbumSchema = Schema({

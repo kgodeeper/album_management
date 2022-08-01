@@ -13,9 +13,7 @@ const { sign, verify, decode } = require('../../utils/jwt.util');
 */
 const checkUserExist = async (account, password) => {
 	try {
-		let user =
-			(await userRepo.findUserByUsername(account)) ||
-			(await userRepo.findUserByEmail(account));
+		let user = await userRepo.findUserByAccount(account);
 		if (user?.password !== password) {
 			user = null;
 		}
@@ -130,9 +128,7 @@ const updateUser = async info => {
 	try {
 		const payload = decode(info.token, process.env.SECRETSTR);
 		if (payload.account) {
-			const user =
-				(await userRepo.findUserByEmail(payload.account)) ||
-				(await userRepo.findUserByUsername(payload.account));
+			const user = await userRepo.findUserByAccount(payload.account);
 			if (user) {
 				try {
 					if (user.avatar) fs.unlinkSync(user.avatar);

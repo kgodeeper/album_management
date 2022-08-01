@@ -1,10 +1,10 @@
-const { mongoose } = require('../../utils/connect');
+const { mongoose } = require('../../utils/connect.util');
 
 const albumSchema = mongoose.Schema(
 	{
 		name: { type: String, required: true },
-		description: String,
-		status: { type: Number, required: true },
+		description: { type: String, default: '' },
+		status: { type: Number, default: 1 },
 	},
 	{
 		timestamps: true,

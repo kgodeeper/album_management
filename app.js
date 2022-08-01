@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { authRoute } = require('./src/modules/auths/auth.route');
-const { userRoute, user } = require('./src/modules/users/user.route');
+const { userRoute } = require('./src/modules/users/user.route');
+const { albumRoute } = require('./src/modules/albums/album.route');
 
 // create server
 const app = express();
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(authRoute);
 app.use(userRoute);
+app.use(albumRoute);
 
 // error handling middleware
 app.use((err, req, res, next) => {
