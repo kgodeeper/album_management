@@ -1,77 +1,43 @@
 const { userModel } = require('./user.model');
-const { databaseError } = require('../../commons/const');
 
 const findUserByUsername = async username => {
-	try {
-		return await userModel.findOne({ username }).lean();
-	} catch (error) {
-		throw databaseError;
-	}
+	return await userModel.findOne({ username }).lean();
 };
 
 const addUser = async user => {
-	try {
-		await userModel.create(user);
-	} catch (error) {
-		throw databaseError;
-	}
+	return await userModel.create(user);
 };
 
 const findUserByEmail = async email => {
-	try {
-		return await userModel.findOne({ email }).lean();
-	} catch (error) {
-		throw databaseError;
-	}
+	return await userModel.findOne({ email }).lean();
 };
 
 const findUserByAccount = async account => {
-	try {
-		return await userModel
-			.findOne({ $or: [{ username: account }, { email: account }] })
-			.lean();
-	} catch (error) {
-		throw databaseError;
-	}
+	return await userModel
+		.findOne({ $or: [{ username: account }, { email: account }] })
+		.lean();
 };
 
 const activeUser = async email => {
-	try {
-		await userModel.updateOne({ email }, { $set: { isActive: true } });
-	} catch (error) {
-		throw databaseError;
-	}
+	await userModel.updateOne({ email }, { $set: { isActive: true } });
 };
 
 const changeActivationCode = async (email, activationCode) => {
-	try {
-		await userModel.updateOne({ email }, { $set: { activationCode } });
-	} catch (error) {
-		throw databaseError;
-	}
+	await userModel.updateOne({ email }, { $set: { activationCode } });
 };
 
 const changePasswordByUser = async (account, password) => {
-	try {
-		await userModel.updateOne(
-			{ $or: [{ username: account }, { email: account }] },
-			{ $set: { password } }
-		);
-	} catch (error) {
-		throw databaseError;
-	}
+	await userModel.updateOne(
+		{ $or: [{ username: account }, { email: account }] },
+		{ $set: { password } }
+	);
 };
 
 const updateUser = async (account, info) => {
-	const { fullname, address, dob, phone, gender, avatar } = info;
-	try {
-		await userModel.updateOne(
-			{ $or: [{ username: account }, { email: account }] },
-			{ $set: { fullname, address, dob, phone, gender, avatar } }
-		);
-	} catch (error) {
-		throw databaseError;
-	}
+	await userModel.updateOne(
+		{ $or: [{ username: account }, { email: account }] },
+		{ $set: info }
+	);
 };
 
 module.exports = {

@@ -1,54 +1,39 @@
 require('dotenv').config({ path: './src/configs/.env' });
 const userService = require('../users/user.service');
-const { sendVerifyMail } = require('../../utils/mail.util');
+const { Error } = require('../../errors/error-handling');
+const { sendVerifyMail, generateCode } = require('../../utils/mail.util');
 const { sign } = require('../../utils/jwt.util');
 const crypto = require('crypto');
 
 const userLogin = async (account, password) => {
-	const loginStatus = {
-		isLogin: true,
-		isExist: true,
-		accessToken: null,
-	};
-	try {
-		password = crypto.createHash('SHA256').update(password).digest('hex');
-		const userExist = await userService.checkUserExist(account, password);
-		if (userExist.isExist) {
-			if (userExist.isActive) {
-				const accessToken = sign({ account }, process.env.SECRETSTR, {
+	password = crypto.createHash('SHA256').update(password).digest('hex');
+	const userExist = await userService.checkUserExist(account, password);
+	if (userExist.isExist) {
+		if (userExist.isActive) {
+			accessToken =
+				sign({ account }, process.env.SECRETSTR, {
 					expiresIn: '1d',
-				});
-				loginStatus.accessToken = accessToken;
-			} else {
-				loginStatus.isLogin = false;
-			}
+				}) || null;
+			return accessToken;
 		} else {
-			loginStatus.isLogin = false;
-			loginStatus.isExist = false;
+			throw new Error(500, "user isn't active");
 		}
-	} catch (error) {
-		throw error;
+	} else {
+		throw new Error(500, "user isn't exist");
 	}
-	return loginStatus;
 };
 
-const userRegister = async (username, password, email) => {
+const userRegister = async info => {
+	info.password = crypto
+		.createHash('SHA256')
+		.update(info.password)
+		.digest('hex');
+	activationCode = generateCode();
+	info.activationCode = activationCode;
 	try {
-		password = crypto.createHash('SHA256').update(password).digest('hex');
-		const date = new Date();
-		date.setMinutes(date.getMinutes() + 2);
-		const activationCode = Number(date);
-		const regisStatus = await userService.userRegister(
-			username,
-			password,
-			email,
-			activationCode
-		);
-		let register = { ...regisStatus, username, email };
-		if (register.isRegister) {
-			sendVerifyMail(email, activationCode);
-		}
-		return register;
+		await userService.userRegister(info);
+		sendVerifyMail(info.email, activationCode);
+		return true;
 	} catch (error) {
 		throw error;
 	}

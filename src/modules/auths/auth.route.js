@@ -1,24 +1,10 @@
 const route = require('express').Router();
 const authControl = require('./auth.controller.js');
-const validation = require('./auth.validation');
+const { validateLogin, validateRegis } = require('./auth.validation');
 
-// route.post('/login', validation.validateLogin, async (req, res, next) => {
-// 	try {
-// 		return await authControl.userLogin(req, res);
-// 	} catch (error) {
-// 		next(error);
-// 	}
-// });
+route.post('/login', validateLogin, authControl.userLogin);
 
-route.post('/login', validation.validateLogin, authControl.userLogin);
-
-route.post('/register', validation.validateRegis, async (req, res, next) => {
-	try {
-		return await authControl.userRegister(req, res);
-	} catch (error) {
-		next(error);
-	}
-});
+route.post('/register', validateRegis, authControl.userRegister);
 
 module.exports = {
 	authRoute: route,

@@ -14,18 +14,19 @@ const createAlbum = async albumInfo => {
 				userId,
 				albumInfo.name
 			);
-			if (!isExist) {
-				const albumId = await albumRepo.createAlbum(albumInfo);
-				await userAlbumService.addMember(userId, albumId._id, 1);
-			} else {
-				return false;
-			}
-			return true;
+			if (isExist) throw new Error(500, 'Album already exist');
+			const albumId = await albumRepo.createAlbum(albumInfo);
+			await userAlbumService.addMember({
+				userId,
+				albumId: albumId._id,
+				userRole: 1,
+			});
 		} else {
-			return false;
+			throw new Error(500, "Can't find user");
 		}
 	} catch (error) {
-		throw error;
+		if (error.errorCode) throw error;
+		else throw new Error(500, 'Unable to create album');
 	}
 };
 

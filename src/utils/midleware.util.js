@@ -1,5 +1,5 @@
 require('dotenv').config({ path: './src/configs/.env' });
-const { Error } = require('../commons/error-handling');
+const { Error } = require('../errors/error-handling');
 const { verify } = require('./jwt.util');
 
 const loginRequire = (req, res, next) => {

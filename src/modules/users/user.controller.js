@@ -1,30 +1,29 @@
 const userService = require('./user.service');
-const { Error } = require('../../commons/error-handling');
+const { Error } = require('../../errors/error-handling');
 const fs = require('fs');
 const { validationUserInfo } = require('./user.validation');
 const { uploadAvatar } = require('../../utils/upload.util');
 
-const activeUser = async (req, res) => {
+const activeUser = async (req, res, next) => {
 	const { activationCode, email } = req.body;
 	try {
 		const isActive = await userService.activeUser(activationCode, email);
-		res.status(200).json({ activeStatus: isActive });
+		res.status(200).json({ isActive });
 	} catch (error) {
-		throw error;
+		next(error);
 	}
 };
 
-const resendCode = async (req, res) => {
-	const email = req.body.email;
+const resendCode = async (req, res, next) => {
 	try {
-		await userService.resendCode(email);
+		await userService.resendCode(req.body.email);
 		res.sendStatus(200);
 	} catch (error) {
-		throw error;
+		next(error);
 	}
 };
 
-const changePasswordByToken = async (req, res) => {
+const changePasswordByToken = async (req, res, next) => {
 	const { token, password } = req.body;
 	try {
 		const isChange = await userService.changePasswordByToken(
@@ -33,27 +32,25 @@ const changePasswordByToken = async (req, res) => {
 		);
 		res.status(200).json({ isChange });
 	} catch (error) {
-		throw error;
+		next(error);
 	}
 };
 
-const verifyEmail = async (req, res) => {
+const verifyEmail = async (req, res, next) => {
 	const { verifyCode, email } = req.body;
 	try {
 		const resetPassToken = await userService.verifyEmail(verifyCode, email);
 		res.status(200).json({ resetPassToken });
 	} catch (error) {
-		throw error;
+		next(error);
 	}
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
 	const upload = uploadAvatar();
 	try {
 		upload(req, res, async error => {
-			if (error) {
-				res.status(200).json({ uploadError: 'fail to update user' });
-			} else {
+			if (!error) {
 				const { fullname, address, gender, phone, dob } = req.body;
 				const token = req.get('Authorization').split(' ')[1];
 				const avatar = req.file.path;
@@ -65,30 +62,24 @@ const updateUser = async (req, res) => {
 					dob,
 				});
 				if (!valid) {
-					try {
-						const isUpdate = await userService.updateUser({
-							fullname,
-							address,
-							gender,
-							phone,
-							dob,
-							avatar,
-							token,
-						});
-						res.status(200).json({ isUpdate });
-					} catch (error) {
-						throw error;
-					}
-				} else {
-					fs.unlinkSync(avatar);
-					res.status(500).json({
-						error: valid.errorMessage,
+					await userService.updateUser({
+						fullname,
+						address,
+						gender,
+						phone,
+						dob,
+						avatar,
+						token,
 					});
+					res.status(200).json({ isUpdate: true });
+				} else {
+					await fs.unlinkSync(avatar);
 				}
 			}
 		});
 	} catch (error) {
-		throw error;
+		console.log(error);
+		next(error);
 	}
 };
 

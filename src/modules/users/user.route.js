@@ -7,63 +7,27 @@ const validation = require('./user.validation');
 route.patch(
 	'/active-user',
 	validation.validateActiveCode,
-	async (req, res, next) => {
-		try {
-			await userControl.activeUser(req, res);
-		} catch (error) {
-			next(error);
-		}
-	}
+	userControl.activeUser
 );
 
-route.patch('/resend-code', async (req, res, next) => {
-	try {
-		await userControl.resendCode(req, res);
-	} catch (error) {
-		next(error);
-	}
-});
+route.patch('/resend-code', userControl.resendCode);
 
 route.patch(
 	'/forgot-password',
 	validation.validationChangePass,
-	async (req, res, next) => {
-		try {
-			await userControl.changePasswordByToken(req, res);
-		} catch (error) {
-			next(error);
-		}
-	}
+	userControl.changePasswordByToken
 );
 
 route.patch(
 	'/change-password',
 	loginRequire,
 	validation.validationChangePass,
-	async (req, res, next) => {
-		try {
-			await userControl.changePasswordByToken(req, res);
-		} catch (error) {
-			next(error);
-		}
-	}
+	userControl.changePasswordByToken
 );
 
-route.post('/verify-email', async (req, res, next) => {
-	try {
-		await userControl.verifyEmail(req, res);
-	} catch (error) {
-		next(error);
-	}
-});
+route.post('/verify-email', userControl.verifyEmail);
 
-route.patch('/update-user', loginRequire, async (req, res, next) => {
-	try {
-		await userControl.updateUser(req, res);
-	} catch (error) {
-		next(error);
-	}
-});
+route.patch('/users', loginRequire, userControl.updateUser);
 
 module.exports = { userRoute: route };
 

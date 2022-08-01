@@ -1,17 +1,17 @@
 const userAlbumService = require('./album.service');
 
-const createAlbum = async (req, res) => {
+const createAlbum = async (req, res, next) => {
 	try {
 		const { name, description, status, token } = req.body;
-		const isCreate = await userAlbumService.createAlbum({
+		await userAlbumService.createAlbum({
 			name,
 			description,
 			status,
 			token,
 		});
-		res.status(200).json({ isCreate });
+		res.status(200).json({ isCreate: true });
 	} catch (error) {
-		throw error;
+		next(error);
 	}
 };
 

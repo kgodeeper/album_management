@@ -18,7 +18,7 @@ app.use(albumRoute);
 
 // error handling middleware
 app.use((err, req, res, next) => {
-	res.status(err.errorCode).json({ errorDetails: err.errorMessage });
+	res.status(err.errorCode).json({ details: err.errorMessage });
 });
 
 app.listen(process.env.PORT, () => {

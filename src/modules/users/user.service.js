@@ -2,8 +2,8 @@ require('dotenv').config({ path: './src/configs/.env' });
 const crypto = require('crypto');
 const fs = require('fs');
 const userRepo = require('./user.repository');
-const { sendVerifyMail } = require('../../utils/mail.util');
-const { Error } = require('../../commons/error-handling');
+const { sendVerifyMail, generateCode } = require('../../utils/mail.util');
+const { Error } = require('../../errors/error-handling');
 const { sign, verify, decode } = require('../../utils/jwt.util');
 
 /*  
@@ -26,36 +26,21 @@ const checkUserExist = async (account, password) => {
 	}
 };
 
-const userRegister = async (username, password, email, activationCode) => {
-	let regisStatus = {
-		isRegister: true,
-		error: null,
-	};
-	try {
-		let user =
-			(await userRepo.findUserByUsername(username)) ||
-			(await userRepo.findUserByEmail(email));
-		console.log(user);
-		if (!user) {
-			await userRepo.addUser({
-				username,
-				password,
-				email,
-				activationCode,
-			});
-		} else {
-			regisStatus.isRegister = false;
-			regisStatus.error = `account already exist`;
-		}
-		return regisStatus;
-	} catch (error) {
-		throw error;
+const userRegister = async info => {
+	const { username, email } = info;
+	const user =
+		(await userRepo.findUserByUsername(username)) ||
+		(await userRepo.findUserByEmail(email));
+	if (user) {
+		throw new Error(500, 'account already exist');
 	}
+	await userRepo.addUser(info);
 };
 
 const activeUser = async (activationCode, email) => {
 	try {
 		const user = await userRepo.findUserByEmail(email);
+		console.log(user);
 		if (
 			user &&
 			user.activationCode % 100000 === Number(activationCode) &&
@@ -63,9 +48,11 @@ const activeUser = async (activationCode, email) => {
 		) {
 			await userRepo.activeUser(email);
 			return true;
-		} else return false;
+		} else {
+			throw new Error();
+		}
 	} catch (error) {
-		throw error;
+		throw new Error(500, 'fail to active user');
 	}
 };
 
@@ -73,16 +60,14 @@ const resendCode = async email => {
 	try {
 		const user = await userRepo.findUserByEmail(email);
 		if (user) {
-			const date = new Date();
-			date.setMinutes(date.getMinutes() + 2);
-			const activationCode = Number(date);
+			const activationCode = generateCode();
 			await userRepo.changeActivationCode(email, activationCode);
 			sendVerifyMail(email, activationCode);
 		} else {
-			throw new Error(200, `can't find user`);
+			throw new Error(500, `can't find user`);
 		}
 	} catch (error) {
-		throw error;
+		throw new Error(500, 'fail to resend mail');
 	}
 };
 
@@ -94,19 +79,16 @@ const verifyEmail = async (verifyCode, email) => {
 			user.activationCode % 100000 === Number(verifyCode) &&
 			user.activationCode >= Number(new Date())
 		) {
-			const token = sign(
-				{ account: user.username },
-				process.env.SECRETSTR,
-				{
+			const token =
+				sign({ account: user.username }, process.env.SECRETSTR, {
 					expiresIn: '600s',
-				}
-			);
+				}) || null;
 			return token;
 		} else {
-			return null;
+			throw new Error(500, 'Fail to verify email');
 		}
 	} catch (error) {
-		throw error;
+		throw new Error(500, 'Email not exist');
 	}
 };
 
@@ -117,10 +99,14 @@ const changePasswordByToken = async (token, password) => {
 		const payload = decode(token, process.env.SECRETSTR);
 		if (payload.account) {
 			await userRepo.changePasswordByUser(payload.account, password);
-		} else return false;
-		return true;
+			return true;
+		} else {
+			throw new Error(500, "Can't find user");
+		}
 	} catch (error) {
-		throw error;
+		if (error.errorCode) {
+			throw error;
+		} else throw new Error('Fail to change password');
 	}
 };
 
@@ -129,17 +115,21 @@ const updateUser = async info => {
 		const payload = decode(info.token, process.env.SECRETSTR);
 		if (payload.account) {
 			const user = await userRepo.findUserByAccount(payload.account);
-			if (user) {
+			if (!user || user.avatar)
 				try {
-					if (user.avatar) fs.unlinkSync(user.avatar);
+					await fs.unlinkSync(user.avatar);
 				} catch (error) {}
-				await userRepo.updateUser(payload.account, info);
-				return true;
-			}
-			return false;
-		} else return false;
+			await userRepo.updateUser(payload.account, info);
+		} else {
+			throw new Error(500, "Can't find user");
+		}
 	} catch (error) {
-		throw error;
+		console.log(error);
+		if (error.errorCode) {
+			throw error;
+		} else {
+			throw new Error(500, 'fail to update user');
+		}
 	}
 };
 

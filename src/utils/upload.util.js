@@ -1,6 +1,6 @@
 const multer = require('multer');
 const path = require('path');
-const { Error } = require('../commons/error-handling');
+const { Error } = require('../errors/error-handling');
 const acceptFile = ['.jpg', '.png', '.jpeg', '.bmp', '.gif'];
 
 const fileFilter = (req, file, cb) => {

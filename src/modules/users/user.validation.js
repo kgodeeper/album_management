@@ -1,5 +1,5 @@
 const joi = require('joi');
-const { Error } = require('../../commons/error-handling');
+const { Error } = require('../../errors/error-handling');
 
 const activeCodeSchema = joi.object({
 	activationCode: joi.string().pattern(new RegExp('[0-9]{5}')).required(),
