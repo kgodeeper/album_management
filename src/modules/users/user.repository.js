@@ -41,18 +41,35 @@ const changeActivationCode = async (email, activationCode) => {
 	}
 };
 
-const changePasswordByUser = async (username, password) => {
+const changePasswordByUser = async (account, password) => {
 	try {
-		await userModel.updateOne({ username }, { $set: { password } });
+		await userModel.updateOne(
+			{ $or: [{ username: account }, { email: account }] },
+			{ $set: { password } }
+		);
 	} catch (error) {
 		throw databaseError;
 	}
 };
+
+const updateUser = async (account, info) => {
+	const { fullname, address, dob, phone, gender, avatar } = info;
+	try {
+		await userModel.updateOne(
+			{ $or: [{ username: account }, { email: account }] },
+			{ $set: { fullname, address, dob, phone, gender, avatar } }
+		);
+	} catch (error) {
+		throw databaseError;
+	}
+};
+
 module.exports = {
 	findUserByUsername,
 	findUserByEmail,
 	addUser,
 	activeUser,
+	updateUser,
 	changeActivationCode,
 	changePasswordByUser,
 };

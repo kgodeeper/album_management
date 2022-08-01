@@ -1,4 +1,4 @@
-const { mongoose } = require('../../utils/connect');
+const { mongoose } = require('../../utils/connect.util');
 const scrypto = require('crypto');
 
 const userSchema = mongoose.Schema(
@@ -12,6 +12,8 @@ const userSchema = mongoose.Schema(
 		phone: String,
 		isActive: { type: Boolean, required: true, default: false },
 		activationCode: Number,
+		address: String,
+		avatar: String,
 	},
 	{
 		timestamps: true,

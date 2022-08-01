@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Error } = require('../../commons/errors/error-handling');
+const { Error } = require('../commons/error-handling');
 
 const sign = (payload, secret, options) => {
 	try {

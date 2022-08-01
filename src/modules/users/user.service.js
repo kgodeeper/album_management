@@ -1,9 +1,10 @@
 require('dotenv').config({ path: './src/configs/.env' });
 const crypto = require('crypto');
+const fs = require('fs');
 const userRepo = require('./user.repository');
-const { sendVerifyMail } = require('../../utils/mail/mail.util');
-const { Error } = require('../../commons/errors/error-handling');
-const { sign, verify, decode } = require('../../utils/jwt/jwt.util');
+const { sendVerifyMail } = require('../../utils/mail.util');
+const { Error } = require('../../commons/error-handling');
+const { sign, verify, decode } = require('../../utils/jwt.util');
 
 /*  
 	check user is exist
@@ -96,8 +97,8 @@ const verifyEmail = async (verifyCode, email) => {
 			user.activationCode >= Number(new Date())
 		) {
 			const token = sign(
-				{ username: user.username },
-				process.env.MAILSECRETSTR,
+				{ account: user.username },
+				process.env.SECRETSTR,
 				{
 					expiresIn: '600s',
 				}
@@ -114,14 +115,34 @@ const verifyEmail = async (verifyCode, email) => {
 const changePasswordByToken = async (token, password) => {
 	try {
 		password = crypto.createHash('SHA256').update(password).digest('hex');
-		verify(token, process.env.MAILSECRETSTR);
-		const payload = decode(token, process.env.MAILSECRETSTR);
-		if (payload.username) {
-			await userRepo.changePasswordByUser(payload.username, password);
+		verify(token, process.env.SECRETSTR);
+		const payload = decode(token, process.env.SECRETSTR);
+		if (payload.account) {
+			await userRepo.changePasswordByUser(payload.account, password);
 		} else return false;
 		return true;
 	} catch (error) {
-		console.log(error);
+		throw error;
+	}
+};
+
+const updateUser = async info => {
+	try {
+		const payload = decode(info.token, process.env.SECRETSTR);
+		if (payload.account) {
+			const user =
+				(await userRepo.findUserByEmail(payload.account)) ||
+				(await userRepo.findUserByUsername(payload.account));
+			if (user) {
+				try {
+					if (user.avatar) fs.unlinkSync(user.avatar);
+				} catch (error) {}
+				await userRepo.updateUser(payload.account, info);
+				return true;
+			}
+			return false;
+		} else return false;
+	} catch (error) {
 		throw error;
 	}
 };
@@ -132,6 +153,7 @@ module.exports = {
 	activeUser,
 	resendCode,
 	verifyEmail,
+	updateUser,
 	changePasswordByToken,
 };
 

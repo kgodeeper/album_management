@@ -1,5 +1,5 @@
 const joi = require('joi');
-const { Error } = require('../../commons/errors/error-handling');
+const { Error } = require('../../commons/error-handling');
 
 const accountSchema = joi
 	.object({

@@ -1,4 +1,8 @@
 const userService = require('./user.service');
+const { Error } = require('../../commons/error-handling');
+const fs = require('fs');
+const { validationUserInfo } = require('./user.validation');
+const { uploadAvatar } = require('../../utils/upload.util');
 
 const activeUser = async (req, res) => {
 	const { activationCode, email } = req.body;
@@ -43,10 +47,56 @@ const verifyEmail = async (req, res) => {
 	}
 };
 
+const updateUser = async (req, res) => {
+	const upload = uploadAvatar();
+	try {
+		upload(req, res, async error => {
+			if (error) {
+				res.status(200).json({ uploadError: 'fail to update user' });
+			} else {
+				const { fullname, address, gender, phone, dob } = req.body;
+				const token = req.get('Authorization').split(' ')[1];
+				const avatar = req.file.path;
+				const valid = await validationUserInfo({
+					fullname,
+					address,
+					gender,
+					phone,
+					dob,
+				});
+				if (!valid) {
+					try {
+						const isUpdate = await userService.updateUser({
+							fullname,
+							address,
+							gender,
+							phone,
+							dob,
+							avatar,
+							token,
+						});
+						res.status(200).json({ isUpdate });
+					} catch (error) {
+						throw error;
+					}
+				} else {
+					fs.unlinkSync(avatar);
+					res.status(500).json({
+						error: valid.errorMessage,
+					});
+				}
+			}
+		});
+	} catch (error) {
+		throw error;
+	}
+};
+
 module.exports = {
 	activeUser,
 	resendCode,
 	changePasswordByToken,
+	updateUser,
 	verifyEmail,
 };
 

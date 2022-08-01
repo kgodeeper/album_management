@@ -1,5 +1,5 @@
 require('dotenv').config({ path: './src/configs/.env' });
-const { Error } = require('../../commons/errors/error-handling');
+const { Error } = require('../commons/error-handling');
 const nodemailer = require('nodemailer');
 
 const transporterConfig = {

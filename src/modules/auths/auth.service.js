@@ -1,7 +1,7 @@
 require('dotenv').config({ path: './src/configs/.env' });
 const userService = require('../users/user.service');
-const { sendVerifyMail } = require('../../utils/mail/mail.util');
-const { sign } = require('../../utils/jwt/jwt.util');
+const { sendVerifyMail } = require('../../utils/mail.util');
+const { sign } = require('../../utils/jwt.util');
 const crypto = require('crypto');
 
 const userLogin = async (account, password) => {
