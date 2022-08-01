@@ -1,4 +1,4 @@
-const { mongoose } = require('../../utils/connect.util');
+const { mongoose } = require('../../configs/database');
 const scrypto = require('crypto');
 
 const userSchema = mongoose.Schema(

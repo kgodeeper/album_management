@@ -2,9 +2,9 @@ require('dotenv').config({ path: './src/configs/.env' });
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { authRoute } = require('./src/modules/auths/auth.route');
-const { userRoute } = require('./src/modules/users/user.route');
-const { albumRoute } = require('./src/modules/albums/album.route');
+const { authRoute } = require('./modules/auths/auth.route');
+const { userRoute } = require('./modules/users/user.route');
+const { albumRoute } = require('./modules/albums/album.route');
 
 // create server
 const app = express();
