@@ -2,13 +2,13 @@ const { Error } = require('../../errors/error-handling');
 const fs = require('fs');
 const photoRepo = require('./photo.repository');
 const userRepo = require('../users/user.repository');
+const { getUserId } = require('../users/user.service');
 const userAlbumRepo = require('../user-albums/user-album.repository');
 
 const addPhotos = async photos => {
 	try {
 		const { albumId, description } = photos.infos;
-		const user = await userRepo.findUserByAccount(photos.infos.account);
-		const userId = user._id.toString();
+		const userId = getUserId(photos.infos.account);
 		let hasPermission = true;
 		let isExist = false;
 		try {
@@ -41,7 +41,6 @@ const addPhotos = async photos => {
 				try {
 					await photoRepo.addPhotos(listPhoto);
 				} catch (error) {
-					console.log(error);
 					throw new Error(500, 'fail to add photo');
 				}
 			} else {
@@ -65,9 +64,8 @@ const addPhotos = async photos => {
 
 const deletePhoto = async photoInfo => {
 	try {
-		const user = await userRepo.findUserByAccount(photoInfo.account);
-		const userId = user._id.toString();
-		const permission = await photoRepo.checkDelelePermission(
+		const userId = await getUserId(photoInfo.account);
+		const permission = await photoRepo.checkPermission(
 			userId,
 			photoInfo.photoId
 		);
@@ -90,9 +88,8 @@ const deletePhoto = async photoInfo => {
 
 const updatePhoto = async photoInfo => {
 	try {
-		const user = await userRepo.findUserByAccount(photoInfo.account);
-		const userId = user._id.toString();
-		const permission = await photoRepo.checkDelelePermission(
+		const userId = await getUserId(photoInfo.account);
+		const permission = await photoRepo.checkPermission(
 			userId,
 			photoInfo.photoId
 		);
@@ -109,9 +106,43 @@ const updatePhoto = async photoInfo => {
 		throw new Error(500, 'Fail to update photo');
 	}
 };
+
+const replacePhoto = async photoInfo => {
+	try {
+		const userId = await getUserId(photoInfo.account);
+		let permission = await photoRepo.checkPermission(
+			userId,
+			photoInfo.photoId
+		);
+		if (photoInfo.albumId) {
+			permission =
+				permission &&
+				(await userAlbumRepo.checkMemberExist({
+					userId,
+					albumId: photoInfo.albumId,
+				}));
+		}
+		if (permission) {
+			isReplace = await photoRepo.replacePhoto(photoInfo);
+			if (!isReplace) {
+				throw new Error(
+					500,
+					'Photo with the same name already exist on this album'
+				);
+			}
+		} else {
+			throw new Error(500, 'You dont have permission');
+		}
+	} catch (error) {
+		if (error instanceof Error) throw error;
+		throw new Error(500, 'Fail to replace photo');
+	}
+};
+
 module.exports = {
 	addPhotos,
 	deletePhoto,
 	updatePhoto,
+	replacePhoto,
 };
 

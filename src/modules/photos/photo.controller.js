@@ -44,9 +44,20 @@ const updatePhoto = async (req, res, next) => {
 	}
 };
 
+const replacePhoto = async (req, res, next) => {
+	try {
+		req.body.photoId = req.params.id;
+		await photoService.replacePhoto(req.body);
+		res.sendStatus(200);
+	} catch (error) {
+		next(error);
+	}
+};
+
 module.exports = {
 	addPhotos,
 	deletePhoto,
 	updatePhoto,
+	replacePhoto,
 };
 

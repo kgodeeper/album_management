@@ -133,6 +133,15 @@ const updateUser = async info => {
 	}
 };
 
+const getUserId = async account => {
+	try {
+		const user = await userRepo.findUserByAccount(account);
+		return user._id.toString();
+	} catch (error) {
+		throw new Error(500, 'Get user fail');
+	}
+};
+
 module.exports = {
 	checkUserExist,
 	userRegister,
@@ -141,5 +150,6 @@ module.exports = {
 	verifyEmail,
 	updateUser,
 	changePasswordByToken,
+	getUserId,
 };
 

@@ -8,6 +8,8 @@ route.delete('/photos/:id', loginRequire, photoControl.deletePhoto);
 
 route.put('/photos/:id', loginRequire, photoControl.updatePhoto);
 
+route.patch('/replace/photos/:id', loginRequire, photoControl.replacePhoto);
+
 module.exports = {
 	photoRoute: route,
 };

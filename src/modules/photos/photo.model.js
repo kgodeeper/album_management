@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const photoShema = Schema(
 	{
 		userId: { type: Schema.Types.ObjectId, required: true },
-		albumId: Schema.Types.ObjectId,
+		albumId: { type: Schema.Types.ObjectId },
 		name: { type: String, required: true },
 		path: { type: String, required: true },
 		capacity: { type: Number, required: true, default: 0 },

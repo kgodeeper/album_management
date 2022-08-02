@@ -11,7 +11,7 @@ const checkPhotoExist = async photoInfo => {
 		.count());
 };
 
-const checkDelelePermission = async (userId, photoId) => {
+const checkPermission = async (userId, photoId) => {
 	return !!(await photoModel.find({ userId, photoId }).count());
 };
 
@@ -27,11 +27,22 @@ const updatePhoto = async photoInfo => {
 	);
 };
 
+const replacePhoto = async photoInfo => {
+	const { photoId, albumId } = photoInfo;
+	if (!albumId)
+		await photoModel.updateOne(
+			{ _id: photoId },
+			{ $unset: { albumId: '' } }
+		);
+	return await photoModel.updateOne({ _id: photoId }, { $set: { albumId } });
+};
+
 module.exports = {
 	addPhotos,
 	checkPhotoExist,
 	findPhoto,
-	checkDelelePermission,
+	checkPermission,
 	updatePhoto,
+	replacePhoto,
 };
 
