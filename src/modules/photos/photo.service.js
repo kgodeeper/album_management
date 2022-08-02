@@ -88,8 +88,27 @@ const deletePhoto = async photoInfo => {
 	}
 };
 
+const updatePhoto = async photoInfo => {
+	try {
+		const user = await userRepo.findUserByAccount(photoInfo.account);
+		const userId = user._id.toString();
+		const permission = await photoRepo.checkDelelePermission(
+			userId,
+			photoInfo.photoId
+		);
+		if (permission) {
+			await photoRepo.updatePhoto(photoInfo);
+		} else {
+			throw new Error(500, "You aren't owner");
+		}
+	} catch (error) {
+		if (error instanceof Error) throw error;
+		throw new Error(500, 'Fail to update photo');
+	}
+};
 module.exports = {
 	addPhotos,
 	deletePhoto,
+	updatePhoto,
 };
 

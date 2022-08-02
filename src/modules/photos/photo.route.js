@@ -6,6 +6,8 @@ route.post('/photos', loginRequire, photoControl.addPhotos);
 
 route.delete('/photos/:id', loginRequire, photoControl.deletePhoto);
 
+route.put('/photos/:id', loginRequire, photoControl.updatePhoto);
+
 module.exports = {
 	photoRoute: route,
 };

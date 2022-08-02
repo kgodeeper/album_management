@@ -34,8 +34,19 @@ const deletePhoto = async (req, res, next) => {
 	}
 };
 
+const updatePhoto = async (req, res, next) => {
+	try {
+		req.body.photoId = req.params.id;
+		await photoService.updatePhoto(req.body);
+		res.sendStatus(200);
+	} catch (error) {
+		next(error);
+	}
+};
+
 module.exports = {
 	addPhotos,
 	deletePhoto,
+	updatePhoto,
 };
 

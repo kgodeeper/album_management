@@ -19,10 +19,19 @@ const findPhoto = async photoId => {
 	return await photoModel.findOne({ _id: photoId });
 };
 
+const updatePhoto = async photoInfo => {
+	const { photoId, name, description } = photoInfo;
+	return await photoModel.updateOne(
+		{ _id: photoId },
+		{ $set: { name, description } }
+	);
+};
+
 module.exports = {
 	addPhotos,
 	checkPhotoExist,
 	findPhoto,
 	checkDelelePermission,
+	updatePhoto,
 };
 
