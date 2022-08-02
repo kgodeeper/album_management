@@ -21,11 +21,15 @@ const addPhotos = async photos => {
 			const photoNames = photos.files.map(item => {
 				return { name: item.originalname };
 			});
-			isExist = await photoRepo.checkPhotoExist({
-				userId,
-				albumId,
-				photoNames,
-			});
+			try {
+				isExist = await photoRepo.checkPhotoExist({
+					userId,
+					albumId,
+					photoNames,
+				});
+			} catch (error) {
+				console.log(error);
+			}
 			if (hasPermission) {
 				if (!isExist) {
 					const listPhoto = photos.files.map(item => {

@@ -7,10 +7,14 @@ const addPhotos = async photoInfo => {
 };
 
 const checkPhotoExist = async photoInfo => {
-	const { userId } = photoInfo;
-	return !!(await photoModel
-		.find({ userId, $or: photoInfo.photoNames })
-		.count());
+	const { userId, albumId, photoNames } = photoInfo;
+	const condition = { userId, albumId, $or: photoNames };
+	if (!albumId) {
+		delete condition.albumId;
+	} else {
+		delete condition.userId;
+	}
+	return !!(await photoModel.find(condition).count());
 };
 
 const checkPermission = async (userId, photoId) => {
