@@ -1,4 +1,6 @@
 const { photoModel } = require('./photo.model');
+const { userModel } = require('../users/user.model');
+const { albumModel } = require('../albums/album.model');
 
 const addPhotos = async photoInfo => {
 	await photoModel.insertMany(photoInfo);
@@ -38,7 +40,18 @@ const replacePhoto = async photoInfo => {
 };
 
 const getPhotosByUser = async userId => {
-	return await photoModel.find({ userId }).lean();
+	return await photoModel
+		.find({ userId })
+		.populate({
+			path: 'userId',
+			select: ['username'],
+			model: userModel,
+		})
+		.populate({
+			path: 'albumId',
+			select: ['name', 'status'],
+			model: albumModel,
+		});
 };
 
 const getPhotoPath = async photoId => {
