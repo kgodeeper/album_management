@@ -12,7 +12,7 @@ const fileFilter = (req, file, cb) => {
 			cb(null, false);
 		}
 	} catch (error) {
-		throw new Error(200, 'upload error');
+		throw new Error(500, 'upload error');
 	}
 };
 
@@ -36,19 +36,29 @@ const singleUpload = (storage, field) => {
 	}).single(field);
 };
 
+const multiUpload = (storage, field, limit) => {
+	return multer({
+		storage,
+		fileFilter,
+	}).array(field, limit);
+};
+
 const uploadAvatar = () => {
 	const storage = createStorage(
 		path.join(__dirname, '../assets/uploads/avatars')
 	);
-	return multer({
-		storage,
-		fileFilter,
-	}).single('avatar');
+	return singleUpload(storage, 'avatar');
+};
+
+const uploadPhotos = limit => {
+	const storage = createStorage(
+		path.join(__dirname, '../assets/uploads/photos')
+	);
+	return multiUpload(storage, 'photos', limit);
 };
 
 module.exports = {
-	createStorage,
-	singleUpload,
 	uploadAvatar,
+	uploadPhotos,
 };
 

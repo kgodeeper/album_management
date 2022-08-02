@@ -14,7 +14,6 @@ const createAlbum = async albumInfo => {
 			userId,
 			albumInfo.name
 		);
-		console.log(isExist);
 		if (isExist) throw new Error(500, 'Album already exist');
 		const albumId = await albumRepo.createAlbum(albumInfo);
 		await userAlbumService.addMember({

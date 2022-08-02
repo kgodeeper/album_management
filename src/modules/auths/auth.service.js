@@ -7,19 +7,24 @@ const crypto = require('crypto');
 
 const userLogin = async (account, password) => {
 	password = crypto.createHash('SHA256').update(password).digest('hex');
-	const userExist = await userService.checkUserExist(account, password);
-	if (userExist.isExist) {
-		if (userExist.isActive) {
-			accessToken =
-				sign({ account }, process.env.SECRETSTR, {
-					expiresIn: '1d',
-				}) || null;
-			return accessToken;
+	try {
+		const userExist = await userService.checkUserExist(account, password);
+		if (userExist.isExist) {
+			if (userExist.isActive) {
+				accessToken =
+					sign({ account }, process.env.SECRETSTR, {
+						expiresIn: '1d',
+					}) || null;
+				return accessToken;
+			} else {
+				throw new Error(500, "user isn't active");
+			}
 		} else {
-			throw new Error(500, "user isn't active");
+			throw new Error(500, "user isn't exist");
 		}
-	} else {
-		throw new Error(500, "user isn't exist");
+	} catch (error) {
+		if (error instanceof Error) throw error;
+		else throw new Error(500, 'Server error');
 	}
 };
 

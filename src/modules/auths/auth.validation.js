@@ -5,7 +5,7 @@ const accountSchema = joi
 	.object({
 		username: joi
 			.string()
-			.pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9]{5,}'))
+			.pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9@]{5,}'))
 			.required(),
 		password: joi
 			.string()
@@ -36,7 +36,7 @@ const validateLogin = async (req, res, next) => {
 		});
 		next();
 	} catch (error) {
-		next(new Error(200, error.details[0].message));
+		next(new Error(500, error.details[0].message));
 	}
 };
 
@@ -51,7 +51,7 @@ const validateRegis = async (req, res, next) => {
 		});
 		next();
 	} catch (error) {
-		next(new Error(200, error.details[0].message));
+		next(new Error(500, error.details[0].message));
 	}
 };
 

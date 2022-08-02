@@ -1,15 +1,15 @@
-const { mongoose } = require('../../utils/connect');
+const { mongoose } = require('../../configs/database');
 const Schema = mongoose.Schema;
 
 const photoShema = Schema(
 	{
-		userID: { type: Schema.Types.ObjectId, required: true },
-		albumID: Schema.Types.ObjectId,
+		userId: { type: Schema.Types.ObjectId, required: true },
+		albumId: Schema.Types.ObjectId,
+		name: { type: String, required: true },
 		path: { type: String, required: true },
 		capacity: { type: Number, required: true, default: 0 },
+		type: { type: String, required: true },
 		description: { type: String, maxlength: 2000 },
-		width: { type: Number, required: true },
-		height: { type: Number, required: true },
 	},
 	{ timestamps: true }
 );

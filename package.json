@@ -4,7 +4,8 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --inspect src/app.js",
+    "start:debug": "nodemon --inspect src/app.js",
+    "start": "nodemon src/app.js",
     "test": "jest test"
   },
   "dependencies": {

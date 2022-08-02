@@ -29,11 +29,16 @@ const deleteAllMembers = async albumId => {
 	await userAlbumModel.deleteMany({ albumId });
 };
 
+const checkUploadPermission = async (userId, albumId) => {
+	return !!(await userAlbumModel.find({ userId, albumId }).count());
+};
+
 module.exports = {
 	addMember,
 	checkAlbumExist,
 	checkAlbumOwner,
 	deleteAllMembers,
 	checkMemberExist,
+	checkUploadPermission,
 };
 
