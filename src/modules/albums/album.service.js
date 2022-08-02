@@ -2,6 +2,7 @@ require('dotenv').config({ path: './src/configs/.env' });
 const { decode } = require('../../utils/jwt.util');
 const albumRepo = require('./album.repository');
 const userAlbumService = require('../user-albums/user-album.service');
+const { getUserId } = require('../users/user.service');
 const userRepo = require('../users/user.repository');
 const { Error } = require('../../errors/error-handling');
 
@@ -63,6 +64,7 @@ const deleteAlbum = async albumInfo => {
 		else throw new Error(500, 'Delete album fail');
 	}
 };
+
 module.exports = {
 	createAlbum,
 	updateAlbum,

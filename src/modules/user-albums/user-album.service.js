@@ -1,6 +1,7 @@
 const userAlbumRepo = require('./user-album.repository');
 const userRepo = require('../users/user.repository');
 const { Error } = require('../../errors/error-handling');
+const { getUserId } = require('../users/user.service');
 
 const addMember = async info => {
 	try {
@@ -12,7 +13,11 @@ const addMember = async info => {
 
 const checkAlbumExist = async (userId, albumName) => {
 	try {
-		return await userAlbumRepo.checkAlbumExist({ userId, albumName });
+		return await userAlbumRepo.checkAlbumExist({
+			userId,
+			albumName,
+			userRole: 1,
+		});
 	} catch (error) {
 		throw new Error(500, "Can't check album");
 	}
@@ -56,11 +61,31 @@ const addUserAlbum = async info => {
 	}
 };
 
+const getUserAlbums = async info => {
+	try {
+		const userId = await getUserId(info.account);
+		return await userAlbumRepo.getUserAlbums(userId);
+	} catch (error) {
+		throw new Error(500, 'Fail to get albums');
+	}
+};
+
+const getMembers = async albumId => {
+	try {
+		return await userAlbumRepo.getMembers(albumId);
+	} catch (error) {
+		console.log(error);
+		throw new Error(500, 'Fail to get members');
+	}
+};
+
 module.exports = {
 	addMember,
 	checkAlbumExist,
 	checkAlbumOwner,
 	deleteAllMembers,
 	addUserAlbum,
+	getUserAlbums,
+	getMembers,
 };
 

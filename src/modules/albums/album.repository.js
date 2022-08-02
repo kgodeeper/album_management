@@ -1,4 +1,5 @@
 const { databaseError } = require('../../commons/const');
+const { userAlbumModel } = require('../user-albums/user-album.model');
 const { albumModel } = require('./album.model');
 
 const createAlbum = async albumInfo => {

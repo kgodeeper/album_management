@@ -1,6 +1,7 @@
 const { databaseError } = require('../../commons/const');
 const { userAlbumModel } = require('./user-album.model');
 const { albumModel } = require('../albums/album.model');
+const { userModel } = require('../users/user.model');
 
 const addMember = async info => {
 	const { userId, albumId, userRole } = info;
@@ -33,6 +34,22 @@ const checkUploadPermission = async (userId, albumId) => {
 	return !!(await userAlbumModel.find({ userId, albumId }).count());
 };
 
+const getUserAlbums = async userId => {
+	return await userAlbumModel.find({ userId }).populate({
+		path: 'albumId',
+		select: ['name', 'status'],
+		model: albumModel,
+	});
+};
+
+const getMembers = async albumId => {
+	return await userAlbumModel.find({ albumId }).populate({
+		path: 'userId',
+		select: ['username'],
+		model: userModel,
+	});
+};
+
 module.exports = {
 	addMember,
 	checkAlbumExist,
@@ -40,5 +57,7 @@ module.exports = {
 	deleteAllMembers,
 	checkMemberExist,
 	checkUploadPermission,
+	getUserAlbums,
+	getMembers,
 };
 
