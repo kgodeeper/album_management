@@ -63,7 +63,33 @@ const addPhotos = async photos => {
 	}
 };
 
+const deletePhoto = async photoInfo => {
+	try {
+		const user = await userRepo.findUserByAccount(photoInfo.account);
+		const userId = user._id.toString();
+		const permission = await photoRepo.checkDelelePermission(
+			userId,
+			photoInfo.photoId
+		);
+		if (permission) {
+			try {
+				const photo = await photoRepo.findPhoto(photoInfo.photoId);
+				await fs.unlinkSync(photo.path);
+				await photo.remove();
+			} catch (error) {
+				throw new Error(500, 'Fail to delele photo');
+			}
+		} else {
+			throw new Error(403, "You aren't owner");
+		}
+	} catch (error) {
+		if (error instanceof Error) throw error;
+		else throw new Error(500, 'Delete photo fail');
+	}
+};
+
 module.exports = {
 	addPhotos,
+	deletePhoto,
 };
 

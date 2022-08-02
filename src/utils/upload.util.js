@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const crypto = require('crypto');
 const { Error } = require('../errors/error-handling');
 const acceptFile = ['.jpg', '.png', '.jpeg', '.bmp', '.gif'];
 
@@ -22,7 +23,7 @@ const createStorage = dest => {
 			cb(null, dest);
 		},
 		filename: (req, file, cb) => {
-			const name = Number(new Date());
+			const name = crypto.randomBytes(20).toString('hex');
 			const ext = path.extname(file.originalname);
 			cb(null, `${name}${ext}`);
 		},

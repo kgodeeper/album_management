@@ -11,8 +11,18 @@ const checkPhotoExist = async photoInfo => {
 		.count());
 };
 
+const checkDelelePermission = async (userId, photoId) => {
+	return !!(await photoModel.find({ userId, photoId }).count());
+};
+
+const findPhoto = async photoId => {
+	return await photoModel.findOne({ _id: photoId });
+};
+
 module.exports = {
 	addPhotos,
 	checkPhotoExist,
+	findPhoto,
+	checkDelelePermission,
 };
 
