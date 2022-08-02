@@ -17,6 +17,7 @@ const checkAlbumExist = async info => {
 	const albums = await userAlbumModel
 		.find({ userId })
 		.populate({ path: 'albumId', model: albumModel });
+	console.log(albums);
 	return !!albums.find(item => item.albumId.name === albumName);
 };
 

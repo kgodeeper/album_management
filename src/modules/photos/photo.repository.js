@@ -22,7 +22,7 @@ const findPhoto = async photoId => {
 const updatePhoto = async photoInfo => {
 	const { photoId, name, description } = photoInfo;
 	return await photoModel.updateOne(
-		{ _id: photoId },
+		{ _id: photoId, name: { $not: { $regex: name } } },
 		{ $set: { name, description } }
 	);
 };

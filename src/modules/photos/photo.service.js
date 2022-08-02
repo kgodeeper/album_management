@@ -97,9 +97,12 @@ const updatePhoto = async photoInfo => {
 			photoInfo.photoId
 		);
 		if (permission) {
-			await photoRepo.updatePhoto(photoInfo);
+			const isUpdate = await photoRepo.updatePhoto(photoInfo);
+			if (!isUpdate.modifiedCount) {
+				throw new Error(500, 'Photo with same name already exist');
+			}
 		} else {
-			throw new Error(500, "You aren't owner");
+			throw new Error(500, "you aren't owner");
 		}
 	} catch (error) {
 		if (error instanceof Error) throw error;
