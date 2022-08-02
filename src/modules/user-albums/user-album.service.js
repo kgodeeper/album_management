@@ -55,7 +55,6 @@ const addUserAlbum = async info => {
 			await userAlbumRepo.addMember(info);
 		} else throw new Error(500, "You aren't owner");
 	} catch (error) {
-		console.log(error);
 		if (error.errorCode) throw error;
 		else throw new Error(500, 'Cant add members');
 	}
@@ -74,7 +73,6 @@ const getMembers = async albumId => {
 	try {
 		return await userAlbumRepo.getMembers(albumId);
 	} catch (error) {
-		console.log(error);
 		throw new Error(500, 'Fail to get members');
 	}
 };
