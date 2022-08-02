@@ -8,7 +8,7 @@ const userAlbumRepo = require('../user-albums/user-album.repository');
 const addPhotos = async photos => {
 	try {
 		const { albumId, description } = photos.infos;
-		const userId = getUserId(photos.infos.account);
+		const userId = await getUserId(photos.infos.account);
 		let hasPermission = true;
 		let isExist = false;
 		try {
@@ -26,28 +26,32 @@ const addPhotos = async photos => {
 				albumId,
 				photoNames,
 			});
-			if (hasPermission && !isExist) {
-				const listPhoto = photos.files.map(item => {
-					return {
-						userId,
-						albumId,
-						name: item.originalname,
-						path: item.path,
-						capacity: item.size,
-						type: item.mimetype,
-						description,
-					};
-				});
-				try {
-					await photoRepo.addPhotos(listPhoto);
-				} catch (error) {
-					throw new Error(500, 'fail to add photo');
+			if (hasPermission) {
+				if (!isExist) {
+					const listPhoto = photos.files.map(item => {
+						return {
+							userId,
+							albumId,
+							name: item.originalname,
+							path: item.path,
+							capacity: item.size,
+							type: item.mimetype,
+							description,
+						};
+					});
+					try {
+						await photoRepo.addPhotos(listPhoto);
+					} catch (error) {
+						throw new Error(500, 'fail to add photo');
+					}
+				} else {
+					throw new Error(
+						500,
+						'Photo with the same name already exist'
+					);
 				}
 			} else {
-				throw new Error(
-					403,
-					"Photo is exist or you don't have permission to upload"
-				);
+				throw new Error(403, "You don't have permission to upload");
 			}
 		} catch (error) {
 			if (error instanceof Error) throw error;
@@ -139,10 +143,30 @@ const replacePhoto = async photoInfo => {
 	}
 };
 
+const getListPhotos = async info => {
+	try {
+		const userId = await getUserId(info.account);
+		return await photoRepo.getPhotosByUser(userId);
+	} catch (error) {
+		throw new Error(500, 'Fail to get photos');
+	}
+};
+
+const getPhoto = async photoId => {
+	try {
+		const path = await photoRepo.getPhotoPath(photoId);
+		return path;
+	} catch (error) {
+		throw new Error(400, 'photo is not exist');
+	}
+};
+
 module.exports = {
 	addPhotos,
 	deletePhoto,
 	updatePhoto,
 	replacePhoto,
+	getListPhotos,
+	getPhoto,
 };
 

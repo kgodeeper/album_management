@@ -5,9 +5,9 @@ const addPhotos = async photoInfo => {
 };
 
 const checkPhotoExist = async photoInfo => {
-	const { userId, albumId } = photoInfo;
+	const { userId } = photoInfo;
 	return !!(await photoModel
-		.find({ userId, albumId, $or: photoInfo.photoNames })
+		.find({ userId, $or: photoInfo.photoNames })
 		.count());
 };
 
@@ -37,6 +37,15 @@ const replacePhoto = async photoInfo => {
 	return await photoModel.updateOne({ _id: photoId }, { $set: { albumId } });
 };
 
+const getPhotosByUser = async userId => {
+	return await photoModel.find({ userId }).lean();
+};
+
+const getPhotoPath = async photoId => {
+	const photoParams = await photoModel.findOne({ _id: photoId }).lean();
+	return photoParams.path;
+};
+
 module.exports = {
 	addPhotos,
 	checkPhotoExist,
@@ -44,5 +53,7 @@ module.exports = {
 	checkPermission,
 	updatePhoto,
 	replacePhoto,
+	getPhotosByUser,
+	getPhotoPath,
 };
 

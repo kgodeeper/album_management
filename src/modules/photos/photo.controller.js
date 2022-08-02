@@ -1,5 +1,6 @@
 const { uploadPhotos } = require('../../utils/upload.util');
 const { decode } = require('../../utils/jwt.util');
+const { Error } = require('../../errors/error-handling');
 const photoService = require('./photo.service');
 
 const addPhotos = async (req, res, next) => {
@@ -54,10 +55,31 @@ const replacePhoto = async (req, res, next) => {
 	}
 };
 
+const getListPhotos = async (req, res, next) => {
+	try {
+		const photos = await photoService.getListPhotos(req.body);
+		res.status(200).json({ photos });
+	} catch (error) {
+		next(error);
+	}
+};
+
+const getPhoto = async (req, res, next) => {
+	try {
+		const path = await photoService.getPhoto(req.params.id);
+		res.sendFile(path);
+	} catch (error) {
+		if (error instanceof Error) next(error);
+		else next(new Error(500, 'path error'));
+	}
+};
+
 module.exports = {
 	addPhotos,
 	deletePhoto,
 	updatePhoto,
 	replacePhoto,
+	getListPhotos,
+	getPhoto,
 };
 

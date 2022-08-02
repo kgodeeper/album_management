@@ -10,6 +10,10 @@ route.put('/photos/:id', loginRequire, photoControl.updatePhoto);
 
 route.patch('/replace/photos/:id', loginRequire, photoControl.replacePhoto);
 
+route.get('/photos', loginRequire, photoControl.getListPhotos);
+
+route.get('/photos/:id', loginRequire, photoControl.getPhoto);
+
 module.exports = {
 	photoRoute: route,
 };
