@@ -63,6 +63,14 @@ const getPhotoPath = async photoId => {
 	return photoParams.path;
 };
 
+const deletePhotoByAlbum = async albumId => {
+	await photoModel.deleteMany({ albumId });
+};
+
+const getPhotosByAlbum = async albumId => {
+	return await photoModel.find({ albumId }).lean();
+};
+
 module.exports = {
 	addPhotos,
 	checkPhotoExist,
@@ -72,5 +80,7 @@ module.exports = {
 	replacePhoto,
 	getPhotosByUser,
 	getPhotoPath,
+	deletePhotoByAlbum,
+	getPhotosByAlbum,
 };
 

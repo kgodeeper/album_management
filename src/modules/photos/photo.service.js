@@ -165,6 +165,18 @@ const getPhoto = async photoId => {
 	}
 };
 
+const deletePhotoByAlbum = async albumId => {
+	try {
+		const listPhoto = await photoRepo.getPhotosByAlbum(albumId);
+		listPhoto.forEach(item => {
+			fs.unlinkSync(item.path);
+		});
+		await photoRepo.deletePhotoByAlbum(albumId);
+	} catch (error) {
+		throw new Error(500, 'Unable to delete photo');
+	}
+};
+
 module.exports = {
 	addPhotos,
 	deletePhoto,
@@ -172,5 +184,6 @@ module.exports = {
 	replacePhoto,
 	getListPhotos,
 	getPhoto,
+	deletePhotoByAlbum,
 };
 

@@ -1,6 +1,7 @@
 require('dotenv').config({ path: './src/configs/.env' });
 const { decode } = require('../../utils/jwt.util');
 const albumRepo = require('./album.repository');
+const photoService = require('../photos/photo.service');
 const userAlbumService = require('../user-albums/user-album.service');
 const { getUserId } = require('../users/user.service');
 const userRepo = require('../users/user.repository');
@@ -53,9 +54,14 @@ const deleteAlbum = async albumInfo => {
 	try {
 		const isOwner = await checkAlbumOwner(albumInfo);
 		if (isOwner) {
-			await albumRepo.deleteAlbum(albumInfo);
-			await userAlbumService.deleteAllMembers(albumInfo.albumId);
-			// delete photo here
+			//await albumRepo.deleteAlbum(albumInfo);
+			//await userAlbumService.deleteAllMembers(albumInfo.albumId);
+			try {
+				await photoService.deletePhotoByAlbum(albumInfo.albumId);
+			} catch (error) {
+				if (error instanceof Error) throw error;
+				throw new Error(500, 'Unable to delete photo');
+			}
 		} else {
 			throw new Error(403, "You are't owner");
 		}
