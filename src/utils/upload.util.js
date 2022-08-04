@@ -59,6 +59,9 @@ const uploadPhotos = limit => {
 };
 
 module.exports = {
+	createStorage,
+	singleUpload,
+	multiUpload,
 	uploadAvatar,
 	uploadPhotos,
 };

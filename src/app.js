@@ -25,7 +25,9 @@ app.use((err, req, res, next) => {
 	res.status(err.errorCode).json({ details: err.errorMessage });
 });
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
 	console.log(`server is running on port ${process.env.PORT}`);
 });
+
+module.exports = { app: server };
 

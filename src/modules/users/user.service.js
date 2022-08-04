@@ -40,13 +40,16 @@ const userRegister = async info => {
 const activeUser = async (activationCode, email) => {
 	try {
 		const user = await userRepo.findUserByEmail(email);
-		console.log(user);
 		if (
 			user &&
 			user.activationCode % 100000 === Number(activationCode) &&
 			user.activationCode >= Number(new Date())
 		) {
-			await userRepo.activeUser(email);
+			try {
+				await userRepo.activeUser(email);
+			} catch (error) {
+				throw error;
+			}
 			return true;
 		} else {
 			throw new Error();

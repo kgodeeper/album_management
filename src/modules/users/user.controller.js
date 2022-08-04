@@ -1,5 +1,4 @@
 const userService = require('./user.service');
-const { Error } = require('../../errors/error-handling');
 const fs = require('fs');
 const { validationUserInfo } = require('./user.validation');
 const { uploadAvatar } = require('../../utils/upload.util');
@@ -52,6 +51,7 @@ const updateUser = async (req, res, next) => {
 		upload(req, res, async error => {
 			if (!error) {
 				const { fullname, address, gender, phone, dob } = req.body;
+				console.log(req.body);
 				const token = req.get('Authorization').split(' ')[1];
 				const avatar = req.file.path;
 				const valid = await validationUserInfo({

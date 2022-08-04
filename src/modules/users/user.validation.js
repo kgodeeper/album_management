@@ -38,7 +38,7 @@ const validateActiveCode = async (req, res, next) => {
 		await activeCodeSchema.validateAsync({ activationCode, email });
 		next();
 	} catch (error) {
-		next(new Error(200, error.details[0].message));
+		next(new Error(500, error.details[0].message));
 	}
 };
 
@@ -48,7 +48,7 @@ const validationChangePass = async (req, res, next) => {
 		await changePassSchema.validateAsync({ token, password, rePassword });
 		next();
 	} catch (error) {
-		next(new Error(200, error.details[0].message));
+		next(new Error(500, error.details[0].message));
 	}
 };
 

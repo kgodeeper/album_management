@@ -1,8 +1,7 @@
-const { Error } = require('../../errors/error-handling');
 const fs = require('fs');
-const photoRepo = require('./photo.repository');
-const userRepo = require('../users/user.repository');
+const { Error } = require('../../errors/error-handling');
 const { getUserId } = require('../users/user.service');
+const photoRepo = require('./photo.repository');
 const userAlbumRepo = require('../user-albums/user-album.repository');
 
 const addPhotos = async photos => {

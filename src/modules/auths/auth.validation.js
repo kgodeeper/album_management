@@ -18,7 +18,8 @@ const accountSchema = joi
 		rePassword: joi.ref('password'),
 		email: joi
 			.string()
-			.email({ minDomainSegments: 2, tlds: { allow: ['com', 'vn'] } }),
+			.email({ minDomainSegments: 2, tlds: { allow: ['com', 'vn'] } })
+			.required(),
 	})
 	.with('password', 'rePassword');
 

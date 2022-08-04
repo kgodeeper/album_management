@@ -67,7 +67,7 @@ const getListPhotos = async (req, res, next) => {
 const getPhoto = async (req, res, next) => {
 	try {
 		const path = await photoService.getPhoto(req.params.id);
-		res.sendFile(path);
+		res.sendFile(path, { status: 200 });
 	} catch (error) {
 		if (error instanceof Error) next(error);
 		else next(new Error(500, 'path error'));
