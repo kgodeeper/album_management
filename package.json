@@ -24,7 +24,8 @@
   "jest": {
     "coveragePathIgnorePatterns" : [
       "<rootDir>/src/utils/.*",
-      "<rootDir>/src/modules/.*/.*\\.(model|repository|service|validation)\\.js"
+      "<rootDir>/src/modules/.*/.*\\.(model|repository|service|validation)\\.js",
+      "<rootDir>/src/configs/.*"
     ]
   },
   "devDependencies": {

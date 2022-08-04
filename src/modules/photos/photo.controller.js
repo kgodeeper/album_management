@@ -17,7 +17,7 @@ const addPhotos = async (req, res, next) => {
 				});
 				res.sendStatus(200);
 			} catch (error) {
-				next(error);
+				next(new Error(500, 'fail to add photos'));
 			}
 		} else {
 			next(new Error(500, 'fail to upload'));

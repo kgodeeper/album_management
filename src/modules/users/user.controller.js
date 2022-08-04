@@ -74,9 +74,10 @@ const updateUser = async (req, res, next) => {
 					res.status(200).json({ isUpdate: true });
 				} else {
 					await fs.unlinkSync(avatar);
+					throw new Error(500, 'Invalid info');
 				}
 			} else {
-				console.log(error);
+				throw new Error(500, 'Upload error');
 			}
 		});
 	} catch (error) {

@@ -1,5 +1,6 @@
 const request = require('supertest');
 const userService = require('../src/modules/users/user.service');
+const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const upload = require('../src/utils/upload.util');
@@ -241,9 +242,15 @@ describe('POST /verify-email', () => {
 
 describe('PATCH /users', () => {
 	it('change user infor success', async () => {
-		const fakeUpload = multer({ dest: 'src/assets/uploads/tests' }).single(
-			'avatar'
-		);
+		const fakeStorage = multer.diskStorage({
+			destination: (req, file, cb) => {
+				return cb(null, 'src/assets/uploads/tests');
+			},
+			filename: (req, file, cb) => {
+				return cb(null, 'test.jpeg');
+			},
+		});
+		const fakeUpload = multer({ storage: fakeStorage }).single('avatar');
 		upload.uploadAvatar.mockReturnValue(fakeUpload);
 		userService.updateUser.mockResolvedValue();
 		const response = await request(app)
@@ -259,6 +266,9 @@ describe('PATCH /users', () => {
 			.set({
 				Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50IjoiZGV2MTdrIiwiaWF0IjoxNjU5NTM2ODk4LCJleHAiOjE2NTk2MjMyOTh9.AjAqgXFgqhSfA6aVLh5646NXn2dK9QVcue5y2TIwcyA`,
 			});
+		await fs.unlinkSync(
+			path.join(__dirname, '../src/assets/uploads/tests/test.jpeg')
+		);
 		expect(response.status).toBe(200);
 	});
 });
