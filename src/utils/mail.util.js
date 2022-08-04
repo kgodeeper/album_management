@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 require('dotenv').config({ path: './src/configs/.env' });
 const { Error } = require('../errors/error-handling');
 const nodemailer = require('nodemailer');

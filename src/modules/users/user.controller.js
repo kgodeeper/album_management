@@ -1,5 +1,6 @@
 const userService = require('./user.service');
 const fs = require('fs');
+const { Error } = require('../../errors/error-handling');
 const { validationUserInfo } = require('./user.validation');
 const { uploadAvatar } = require('../../utils/upload.util');
 
@@ -46,12 +47,11 @@ const verifyEmail = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
-	const upload = uploadAvatar();
 	try {
+		const upload = uploadAvatar();
 		upload(req, res, async error => {
 			if (!error) {
 				const { fullname, address, gender, phone, dob } = req.body;
-				console.log(req.body);
 				const token = req.get('Authorization').split(' ')[1];
 				const avatar = req.file.path;
 				const valid = await validationUserInfo({
@@ -75,10 +75,13 @@ const updateUser = async (req, res, next) => {
 				} else {
 					await fs.unlinkSync(avatar);
 				}
+			} else {
+				console.log(error);
 			}
 		});
 	} catch (error) {
-		next(error);
+		if (error instanceof Error) next(error);
+		next(new Error(500, 'Error'));
 	}
 };
 

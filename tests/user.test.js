@@ -1,6 +1,7 @@
 const request = require('supertest');
 const userService = require('../src/modules/users/user.service');
 const path = require('path');
+const multer = require('multer');
 const upload = require('../src/utils/upload.util');
 const { Error } = require('../src/errors/error-handling');
 const { app } = require('../src/app');
@@ -234,6 +235,30 @@ describe('POST /verify-email', () => {
 			email: 'itpt1711@gmail.com',
 			verifyCode: '11012',
 		});
+		expect(response.status).toBe(200);
+	});
+});
+
+describe('PATCH /users', () => {
+	it('change user infor success', async () => {
+		const fakeUpload = multer({ dest: 'src/assets/uploads/tests' }).single(
+			'avatar'
+		);
+		upload.uploadAvatar.mockReturnValue(fakeUpload);
+		userService.updateUser.mockResolvedValue();
+		const response = await request(app)
+			.patch('/users')
+			.type('multipart/form-data')
+			.attach(
+				'avatar',
+				path.join(
+					__dirname,
+					'../src/assets/uploads/avatars/1659365249888.jpeg'
+				)
+			)
+			.set({
+				Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50IjoiZGV2MTdrIiwiaWF0IjoxNjU5NTM2ODk4LCJleHAiOjE2NTk2MjMyOTh9.AjAqgXFgqhSfA6aVLh5646NXn2dK9QVcue5y2TIwcyA`,
+			});
 		expect(response.status).toBe(200);
 	});
 });
