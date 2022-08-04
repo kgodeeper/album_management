@@ -6,8 +6,8 @@
   "scripts": {
     "start:debug": "nodemon --inspect src/app.js",
     "start": "nodemon src/app.js",
-    "test": "jest test",
-    "coverage": "jest --coverage"
+    "test": "jest test --maxWorkers=1",
+    "coverage": "jest --maxWorkers=1 --coverage"
   },
   "dependencies": {
     "body-parser": "^1.20.0",

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const jwt = require('jsonwebtoken');
 const { Error } = require('../errors/error-handling');
 
