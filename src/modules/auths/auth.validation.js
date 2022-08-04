@@ -29,7 +29,9 @@ const loginSchema = joi.object({
 });
 
 const validateLogin = async (req, res, next) => {
+	console.log(req);
 	const { account, password } = req.body;
+	console.log(req.body);
 	try {
 		await loginSchema.validateAsync({
 			account,

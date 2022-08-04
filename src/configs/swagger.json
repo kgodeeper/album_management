@@ -1,0 +1,65 @@
+{
+    "openapi": "3.0.0",
+    "name": "Album manager API docs",
+    "servers": [{
+        "url": "http://localhost:2000"
+    }],
+    
+    "paths": {
+        "summary": "Authenticate user",
+        "description": "Authentication API",
+        "/login":{
+            "tags": "Login",
+            "post": {
+                "description": "user login",
+                "response": {
+                    "200": {
+                        "description": "Return accessToken",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "accessToken": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "login fail",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "details": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [{
+                "name": "account",
+                "in": "body",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "account": {
+                            "type": "string"
+                        },
+                        "password": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }]
+        }
+    }
+}

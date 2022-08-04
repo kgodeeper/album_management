@@ -57,6 +57,7 @@ const validationUserInfo = async info => {
 		await userInfoSchema.validateAsync(info);
 		return null;
 	} catch (error) {
+		console.log(error);
 		return new Error(200, error.details[0].message);
 	}
 };
